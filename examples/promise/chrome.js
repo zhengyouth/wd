@@ -33,6 +33,7 @@ browser
     .should.become('WD Tests')
   .elementById('i am a link')
   .click()
+  .sleep(2000)
   .eval("window.location.href")
     .should.eventually.include('guinea-pig2')
   .back()

@@ -307,8 +307,8 @@ describe('api-various ' + env.ENV_DESC, function() {
   it('browser.setHttpTimeout', function() {
     return browser
       .setHttpTimeout(env.HTTP_TIMEOUT || 60000).should.be.fulfilled
-         .setHTTPInactivityTimeout(env.HTTP_TIMEOUT || 60000).should.be.fulfilled
-         .setHttpTimeout(env.HTTP_TIMEOUT).should.be.fulfilled;
+      .setHTTPInactivityTimeout(env.HTTP_TIMEOUT || 60000).should.be.fulfilled
+      .setHttpTimeout(env.HTTP_TIMEOUT).should.be.fulfilled;
   });
 
   // get item from array, starting at 0
