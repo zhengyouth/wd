@@ -47,7 +47,11 @@ describe('async' + env.ENV_DESC, function() {
     browser.elementById('submit', function(err, el) {
       should.not.exist(err);
       should.exist(el);
-      done();
+      el.text(function(err, text) {
+        should.not.exist(err);
+        should.exist(text);
+        done();
+      });
     });
   });
 

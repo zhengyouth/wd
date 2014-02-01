@@ -14,6 +14,10 @@ describe('add-methods ' + env.ENV_DESC, function() {
       });
     },
     sleepAndText: function(el, cb) {
+      if(!cb && typeof el === 'function'){
+        cb = el;
+        el = undefined;
+      }
       var _this = this;
       _this.sleep(200, function(err) {
         if(err) { return cb(err); }
@@ -177,12 +181,12 @@ describe('add-methods ' + env.ENV_DESC, function() {
       browser = newPromiseChainRemote();
       return initAndGet(this, 'pc/3').then(function() {
         return browser
-          // .sleepAndElementById('theDiv')
-          //   .should.be.fulfilled
-          // .sleepAndText()
-          //   .should.be.fulfilled
-          // .sleepAndElementById('theDiv')
-          // .sleepAndText().should.eventually.include("Hello World!")
+          .sleepAndElementById('theDiv')
+            .should.be.fulfilled
+          .sleepAndText()
+            .should.be.fulfilled
+          .sleepAndElementById('theDiv')
+          .sleepAndText().should.eventually.include("Hello World!")
           .elementByCssWhenReady('#theDiv', 500).text()
             .should.become("Hello World!");
       });

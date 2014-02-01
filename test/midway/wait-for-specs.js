@@ -2,6 +2,7 @@ require('../helpers/setup');
 
 describe('wait-for ' + env.ENV_DESC, function() {
   var Asserter = wd.Asserter;
+  var AsyncAsserter = wd.AsyncAsserter;
   var page = '<div id="theDiv"></div>';
 
   var appendChild =
@@ -19,7 +20,7 @@ describe('wait-for ' + env.ENV_DESC, function() {
     throw err;
   };
 
-  var asserter = new Asserter(
+  var asserter = new AsyncAsserter(
     function(browser, cb) {
       browser.text(function(err, text) {
         if(err) { return cb(err); }
@@ -39,13 +40,13 @@ describe('wait-for ' + env.ENV_DESC, function() {
     }
   );
 
-  var asserterFalse = new Asserter(
+  var asserterFalse = new AsyncAsserter(
     function(browser, cb) {
       cb( null, false);
     }
   );
 
-  var elAsserter = new Asserter(
+  var elAsserter = new AsyncAsserter(
     function(el, cb) {
       el.text(function(err, text) {
         if(err) { return cb(err); }
@@ -63,7 +64,7 @@ describe('wait-for ' + env.ENV_DESC, function() {
     }
   );
 
-  var elAsserterFalse = new Asserter(
+  var elAsserterFalse = new AsyncAsserter(
     function(el, cb) {
       cb( null, false);
     }
@@ -76,7 +77,7 @@ describe('wait-for ' + env.ENV_DESC, function() {
 
   partials['browser.waitFor'] = page;
   it('browser.waitFor', function() {
-    return browser
+    return browser.noop()
 
       .execute( appendChild, [env.BASE_TIME_UNIT] )
       .text().should.eventually.not.include('a waitFor child')
@@ -101,8 +102,8 @@ describe('wait-for ' + env.ENV_DESC, function() {
       });
   });
 
-  partials['browser.waitForElement'] = page;
-  it('browser.waitForElement', function() {
+  partials['browser.waitForElement - no asserter'] = page;
+  it('browser.waitForElement - no asserter', function() {
     return browser
 
       .execute( appendChild, [env.BASE_TIME_UNIT] )

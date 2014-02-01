@@ -118,7 +118,7 @@ describe('config-http ' + env.ENV_DESC + ' @multi', function() {
     };
     if(newConfig.retryDelay = wdCurrent.retryDelay) { newConfig.retryDelay++; }
     return browser
-      .configureHttp( newConfig).then(function() {
+      .configureHttp(newConfig).then(function() {
         browser._httpConfig.should.deep.equal(newConfig);
         wd.getHttpConfig().should.deep.equal(wdCurrent);
       })
