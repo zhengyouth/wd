@@ -1,4 +1,4 @@
-GLOBAL._ = require('../../lib/lodash');
+GLOBAL._ = require('../../lib/utils/lodash');
 
 var env = GLOBAL.env = {};
 

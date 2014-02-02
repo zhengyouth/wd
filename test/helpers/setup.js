@@ -1,7 +1,7 @@
 require('./env');
 
 GLOBAL.wd = require('../../lib/main');
-var utils = require('../../lib/utils');
+var helpers = require('../../lib/utils/helpers');
 
 if( env.TRAVIS ){
   console.log("Travis environment detected.");
@@ -68,7 +68,7 @@ GLOBAL.sauceJobTitle = function(title) {
 
 GLOBAL.prepareJs = function(script) {
   if(env.ANDROID){
-    script = utils.inlineJs(script);
+    script = helpers.inlineJs(script);
   }
   return script;
 };
