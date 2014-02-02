@@ -5,17 +5,17 @@ chai.should();
 var wd;
 try {
   wd = require('wd');
-} catch( err ) {
+} catch (err) {
   wd = require('../../lib/main');
 }
 
 var browser = wd.remote();
 
 // optional extra logging
-browser.on('status', function(info) {
+browser.on('status', function (info) {
   console.log(info.cyan);
 });
-browser.on('command', function(meth, path, data) {
+browser.on('command', function (meth, path, data) {
   console.log(' > ' + meth.yellow, path.grey, data || '');
 });
 
@@ -23,24 +23,24 @@ browser.on('command', function(meth, path, data) {
 browser
   .chain()
   .init({ browserName: 'chrome' })
-  .get("http://admc.io/wd/test-pages/guinea-pig.html")
-  .title(function(err, title) {
+  .get('http://admc.io/wd/test-pages/guinea-pig.html')
+  .title(function (err, title) {
     title.should.include('WD');
   })
-  .queueAddAsync(function(cb) {
-    console.log("simulating async call, waiting 500ms");
-    setTimeout(function() {
-      console.log("500ms expired");
+  .queueAddAsync(function (cb) {
+    console.log('simulating async call, waiting 500ms');
+    setTimeout(function () {
+      console.log('500ms expired');
       cb(null);
     }, 500);
   })
-  .elementById('i am a link', function(err, el) {
+  .elementById('i am a link', function (err, el) {
     //we should make clickElement not require a callback
-    browser.next('clickElement', el, function() {
-      console.log("did the click!");
+    browser.next('clickElement', el, function () {
+      console.log('did the click!');
     });
   })
-  .eval("window.location.href", function(err, href) {
+  .eval('window.location.href', function (err, href) {
     href.should.include('guinea-pig2');
   })
   .quit();

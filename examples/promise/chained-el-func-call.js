@@ -4,15 +4,15 @@
 //
 
 require('colors');
-var chai = require("chai");
-var chaiAsPromised = require("chai-as-promised");
+var chai = require('chai');
+var chaiAsPromised = require('chai-as-promised');
 chai.use(chaiAsPromised);
 chai.should();
 
 var wd;
 try {
   wd = require('wd');
-} catch( err ) {
+} catch (err) {
   wd = require('../../lib/main');
 }
 
@@ -25,10 +25,10 @@ var browser = wd.promiseChainRemote();
 
 // optional extra logging
 //browser._debugPromise();
-browser.on('status', function(info) {
+browser.on('status', function (info) {
   console.log(info.cyan);
 });
-browser.on('command', function(meth, path, data) {
+browser.on('command', function (meth, path, data) {
   console.log(' > ' + meth.yellow, path.grey, data || '');
 });
 
@@ -47,9 +47,10 @@ browser
 
   // caveat
   .elementById('the-basics')
-  .text()     // The 'text' call returns a string, so the element context is lost.
-  .text()     // This text call doesn't behave as expected.
-  .should.not.become('The Basics') // The whole 'body' element was actually retrieved.
+  // The 'text' call returns a string, so the element context is lost.
+  .text()
+  .text() // This text call doesn't behave as expected.
+  .should.not.become('The Basics') // The whole 'body' element was retrieved.
 
   // element methods are browser scoped by default
   .elementById('add-some-control')
@@ -58,21 +59,23 @@ browser
 
   // retrieving a subelement
   .elementById('add-some-control')
-  .elementById('>', 'the-basics') // This looks for an element in the current element scope
+  // This looks for an element in the current element scope
+  .elementById('>', 'the-basics')
   .text().should.become('The Basics')
   .should.be.rejectedWith(/status: 7/) // no 'the-basics' subelement
 
   // getting out of the element scope
   .elementById('the-basics')
   .text('<') // text is now called in the browser scope
-  .should.not.become('The Basics') // The whole 'body' element was actually retrieved.
+  // The whole 'body' element was retrieved.
+  .should.not.become('The Basics')
 
   // sometimes it is easier to just retrieve the same element twice
   .elementById('the-basics').text().should.become('The Basics')
   .elementById('the-basics').text().should.eventually.include('The Basics')
 
   // resolve the text in a  then method
-  .elementById('the-basics').text().then(function(text) {
+  .elementById('the-basics').text().then(function (text) {
     text.should.equal('The Basics');
     text.should.include('The Basics');
   })
@@ -80,7 +83,7 @@ browser
   // using Q.all, probably overkill in this case
   // the 2 test are done in parallel
   // don't forget the 'return'
-  .then(function() {
+  .then(function () {
     var basicEl = browser.elementById('the-basics');
     return Q.all([
       basicEl.text().should.become('The Basics'),
@@ -91,14 +94,16 @@ browser
   // using Q sequence
   // the 2 test are done in sequence
   // don't forget the 'return'(s)
-  .then(function() {
+  .then(function () {
     var basicEl = browser.elementById('the-basics');
     var sequence = [
-      function() {return basicEl.text().should.become('The Basics');},
-      function() {return basicEl.text().should.eventually.include('The Basics');}
+      function () { return basicEl.text().should.become('The Basics'); },
+      function () {
+        return basicEl.text().should.eventually.include('The Basics');
+      }
     ];
     return sequence.reduce(Q.when, new Q()); // yes this is ugly
   })
 
-  .fin(function() { return browser.quit(); })
+  .fin(function () { return browser.quit(); })
   .done();

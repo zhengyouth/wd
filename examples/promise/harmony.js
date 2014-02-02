@@ -1,20 +1,20 @@
+/* jshint esnext:true */
+
 // requires node 0.11
 // run with: node --harmony ./examples/promise/harmony.js
 //
 // This demos how to mix promise chain and generators
 
-/* jshint moz: true, evil: true */
-
 require('colors');
-var chai = require("chai");
-var chaiAsPromised = require("chai-as-promised");
+var chai = require('chai');
+var chaiAsPromised = require('chai-as-promised');
 chai.use(chaiAsPromised);
 chai.should();
 
 var wd;
 try {
   wd = require('wd');
-} catch( err ) {
+} catch (err) {
   wd = require('../../lib/main');
 }
 
@@ -27,23 +27,23 @@ var browser = wd.promiseChainRemote();
 
 // optional extra logging
 //browser._debugPromise();
-browser.on('status', function(info) {
+browser.on('status', function (info) {
   console.log(info.cyan);
 });
-browser.on('command', function(meth, path, data) {
+browser.on('command', function (meth, path, data) {
   console.log(' > ' + meth.yellow, path.grey, data || '');
 });
 
-Q.spawn(function *() {
+Q.spawn(function* () {
   // basic
-  try{
-    yield browser.init({browserName:'chrome'});
-    yield browser.get("http://admc.io/wd/test-pages/guinea-pig.html");
+  try {
+    yield browser.init({browserName: 'chrome'});
+    yield browser.get('http://admc.io/wd/test-pages/guinea-pig.html');
     var title = yield browser.title();
     title.should.equal('WD Tests');
     var linkEl = yield  browser.elementById('i am a link');
     yield linkEl.click();
-    var href = yield browser.eval("window.location.href");
+    var href = yield browser.eval('window.location.href');
     href.should.include('guinea-pig2');
     yield browser.back();
     var commentsEl = yield browser.elementByCss('#comments');
@@ -55,10 +55,10 @@ Q.spawn(function *() {
   }
 
   // more fancy
-  try{
+  try {
     yield browser
-      .init({browserName:'chrome'})
-      .get("http://admc.io/wd/test-pages/guinea-pig.html")
+      .init({browserName: 'chrome'})
+      .get('http://admc.io/wd/test-pages/guinea-pig.html')
       .title().should.become('WD Tests');
 
     yield  browser
@@ -66,7 +66,7 @@ Q.spawn(function *() {
       .click();
 
     yield browser
-      .eval("window.location.href")
+      .eval('window.location.href')
       .should.eventually.include('guinea-pig2');
 
     yield browser.back();

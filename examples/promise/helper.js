@@ -1,13 +1,13 @@
 require('colors');
-var chai = require("chai");
-var chaiAsPromised = require("chai-as-promised");
+var chai = require('chai');
+var chaiAsPromised = require('chai-as-promised');
 chai.use(chaiAsPromised);
 chai.should();
 
 var wd;
 try {
   wd = require('wd');
-} catch( err ) {
+} catch (err) {
   wd = require('../../lib/main');
 }
 
@@ -18,15 +18,15 @@ var browser = wd.promiseChainRemote();
 
 // optional extra logging
 //browser._debugPromise();
-browser.on('status', function(info) {
+browser.on('status', function (info) {
   console.log(info.cyan);
 });
-browser.on('command', function(meth, path, data) {
+browser.on('command', function (meth, path, data) {
   console.log(' > ' + meth.yellow, path.grey, data || '');
 });
 
 function search(something) {
-  return function() {
+  return function () {
     return browser
       .elementByCss('input[name=q]')
       .type(something)
@@ -38,5 +38,5 @@ browser
   .init({browserName: 'chrome'})
   .get('http://www.google.com')
   .then(search('wd'))
-  .fin(function() { return browser.sleep(2000).quit(); })
+  .fin(function () { return browser.sleep(2000).quit(); })
   .done();
