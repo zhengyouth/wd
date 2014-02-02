@@ -2,13 +2,13 @@
 
 require('../helpers/setup');
 
-describe('basic ' + env.ENV_DESC, function() {
+describe('basic ' + env.ENV_DESC, function () {
   this.timeout(env.TIMEOUT);
 
   var browser;
   var allPassed = true;
 
-  before(function() {
+  before(function () {
     browser = wd.promiseChainRemote(env.REMOTE_CONFIG);
     var sauceExtra = {
       name: sauceJobTitle(this.runnable().parent.title),
@@ -16,35 +16,35 @@ describe('basic ' + env.ENV_DESC, function() {
     };
     return browser
       .configureLogging()
-      .init(mergeDesired(env.DESIRED, env.SAUCE? sauceExtra : null ));
+      .init(mergeDesired(env.DESIRED, env.SAUCE ? sauceExtra : null));
   });
 
-  beforeEach(function() {
+  beforeEach(function () {
     return browser.get('http://admc.io/wd/test-pages/guinea-pig.html');
   });
 
-  afterEach(function() {
+  afterEach(function () {
     allPassed = allPassed && (this.currentTest.state === 'passed');
   });
 
-  after(function() {
+  after(function () {
     return browser
-      .quit().then(function() {
-        if(env.SAUCE) { return(browser.sauceJobStatus(allPassed)); }
+      .quit().then(function () {
+        if (env.SAUCE) { return browser.sauceJobStatus(allPassed); }
       });
   });
 
-  it("should retrieve the page title", function() {
+  it('should retrieve the page title', function () {
     return browser
-      .title().should.eventually.include("WD");
+      .title().should.eventually.include('WD');
   });
 
-  it("submit element should be clicked", function() {
+  it('submit element should be clicked', function () {
     /* jshint evil: true */
     return browser
-      .elementById("submit")
+      .elementById('submit')
       .click()
-      .eval("window.location.href").should.eventually.include("http://");
+      .eval('window.location.href').should.eventually.include('http://');
   });
 
 });

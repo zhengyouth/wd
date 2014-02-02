@@ -2,13 +2,13 @@
 
 require('../helpers/setup');
 
-describe('promise chain ' + env.ENV_DESC, function() {
+describe('promise chain ' + env.ENV_DESC, function () {
   this.timeout(env.TIMEOUT);
 
   var browser;
   var allPassed = true;
 
-  before(function() {
+  before(function () {
     browser = wd.promiseChainRemote(env.REMOTE_CONFIG);
     var sauceExtra = {
       name: sauceJobTitle(this.runnable().parent.title),
@@ -16,33 +16,33 @@ describe('promise chain ' + env.ENV_DESC, function() {
     };
     return browser
       .configureLogging()
-      .init(mergeDesired(env.DESIRED, env.SAUCE? sauceExtra : null ));
+      .init(mergeDesired(env.DESIRED, env.SAUCE ? sauceExtra : null));
   });
 
-  beforeEach(function() {
+  beforeEach(function () {
     return browser.get('http://admc.io/wd/test-pages/guinea-pig.html');
   });
 
-  afterEach(function() {
+  afterEach(function () {
     allPassed = allPassed && (this.currentTest.state === 'passed');
   });
 
-  after(function() {
+  after(function () {
     return browser
-      .quit().then(function() {
-        if(env.SAUCE) { return(browser.sauceJobStatus(allPassed)); }
+      .quit().then(function () {
+        if (env.SAUCE) { return browser.sauceJobStatus(allPassed); }
       });
   });
 
-  it("should retrieve title", function() {
+  it('should retrieve title', function () {
     return browser
-      .title().should.eventually.contain("WD");
+      .title().should.eventually.contain('WD');
   });
 
- it("should retrieve title a subelement value", function() {
+  it('should retrieve title a subelement value', function () {
     return browser
       .elementById('the_forms_id')
-      .elementById('>', 'unchecked_checkbox').then(function(el) {
+      .elementById('>', 'unchecked_checkbox').then(function (el) {
         return Q.all([
           el.click().click().getAttribute('type').should.become('checkbox'),
           el.getAttribute('type').should.become('checkbox')
@@ -50,20 +50,20 @@ describe('promise chain ' + env.ENV_DESC, function() {
       });
   });
 
-  it("sendKeys should work", function() {
+  it('sendKeys should work', function () {
     var el = browser
       .elementById('the_forms_id')
       .elementById('>', 'unchecked_checkbox');
-      return el.sendKeys('X');
+    return el.sendKeys('X');
   });
 
-   it("clicking submit should work", function() {
+  it('clicking submit should work', function () {
     /* jshint evil: true */
     return browser
-      .elementById("submit")
+      .elementById('submit')
       .click()
-      .eval("window.location.href")
-      .should.eventually.contain("http://");
+      .eval('window.location.href')
+      .should.eventually.contain('http://');
   });
 
 });

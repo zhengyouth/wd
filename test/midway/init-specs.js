@@ -7,85 +7,91 @@ function buildDesired(title, browser, platform) {
     name: sauceJobTitle(title),
     tags: ['midway']
   };
-  var desired = mergeDesired( env.DESIRED,
-    env.SAUCE? sauceExtra : null
+  var desired = mergeDesired(env.DESIRED,
+    env.SAUCE ? sauceExtra : null
   );
   delete desired.browserName;
   delete desired.platform;
-  if(browser) { desired.browserName = browser; }
-  if(platform) { desired.platform = platform; }
+  if (browser) { desired.browserName = browser; }
+  if (platform) { desired.platform = platform; }
   return desired;
 }
 
-describe('init ' + env.ENV_DESC + ' @multi', function() {
+describe('init ' + env.ENV_DESC + ' @multi', function () {
   this.timeout(env.TIMEOUT);
 
   var browser;
 
-  before(function() {
+  before(function () {
     browser = wd.promiseChainRemote(env.REMOTE_CONFIG);
     return browser.configureLogging();
   });
 
-  afterEach(function() {
+  afterEach(function () {
     var _this = this;
     return browser
-      .quit().then(function() {
-        if(env.SAUCE) { return(browser.sauceJobStatus(_this.currentTest.state === 'passed')); }
+      .quit().then(function () {
+        if (env.SAUCE) {
+          return browser.sauceJobStatus(_this.currentTest.state === 'passed');
+        }
       });
   });
 
-  it("default should be firefox", function() {
+  it('default should be firefox', function () {
     browser.defaultCapabilities.browserName.should.equal('firefox');
     browser.defaultCapabilities.javascriptEnabled.should.be.ok;
     return browser
-      .init(buildDesired( this.runnable().parent.title + " #1",
-        undefined, env.DESIRED.platform ))
-      .sessionCapabilities().should.eventually.have.property('browserName', 'firefox');
+      .init(buildDesired(this.runnable().parent.title + ' #1',
+        undefined, env.DESIRED.platform))
+      .sessionCapabilities()
+        .should.eventually.have.property('browserName', 'firefox');
   });
 
-  it("setting browser default", function() {
+  it('setting browser default', function () {
     browser.defaultCapabilities.browserName = 'chrome';
     browser.defaultCapabilities.javascriptEnabled = false;
     return browser
-      .init(buildDesired( this.runnable().parent.title + " #2",
-        undefined, env.DESIRED.platform ))
-      .sessionCapabilities().should.eventually.have.property('browserName', 'chrome');
+      .init(buildDesired(this.runnable().parent.title + ' #2',
+        undefined, env.DESIRED.platform))
+      .sessionCapabilities()
+        .should.eventually.have.property('browserName', 'chrome');
   });
 
-  it("desired browser as parameter", function() {
+  it('desired browser as parameter', function () {
     browser.defaultCapabilities.browserName = 'firefox';
     return browser
-      .init(buildDesired( this.runnable().parent.title + " #3",
+      .init(buildDesired(this.runnable().parent.title + ' #3',
         'chrome', env.DESIRED.platform))
-      .sessionCapabilities().should.eventually.have.property('browserName', 'chrome');
+      .sessionCapabilities()
+        .should.eventually.have.property('browserName', 'chrome');
   });
 
-  if(env.SAUCE){
-
-    it("setting browser platform to VISTA @saucelabs", function() {
+  if (env.SAUCE) {
+    it('setting browser platform to VISTA @saucelabs', function () {
       browser.defaultCapabilities.platform = 'VISTA';
       browser.defaultCapabilities.browserName = 'firefox';
 
       return browser
-        .init(buildDesired( this.runnable().parent.title + " #4"))
-        .sessionCapabilities().should.eventually.have.property('platform', 'XP');
+        .init(buildDesired(this.runnable().parent.title + ' #4'))
+        .sessionCapabilities()
+          .should.eventually.have.property('platform', 'XP');
     });
 
-    it("setting browser platform to LINUX @saucelabs", function() {
+    it('setting browser platform to LINUX @saucelabs', function () {
       browser.defaultCapabilities.browserName = 'chrome';
       browser.defaultCapabilities.platform = 'LINUX';
 
       return browser
-        .init(buildDesired( this.runnable().parent.title + " #5"))
-        .sessionCapabilities().should.eventually.have.property('platform', 'linux');
+        .init(buildDesired(this.runnable().parent.title + ' #5'))
+        .sessionCapabilities()
+          .should.eventually.have.property('platform', 'linux');
     });
 
-    it("configuring explorer in desired @saucelabs", function() {
+    it('configuring explorer in desired @saucelabs', function () {
       return browser
-        .init(buildDesired( this.runnable().parent.title + " #6",
+        .init(buildDesired(this.runnable().parent.title + ' #6',
           'iexplore', 'Windows 2008'))
-        .sessionCapabilities().then(function(sessionCapabilities) {
+        .sessionCapabilities().then(function (sessionCapabilities) {
           sessionCapabilities.platform.should.equal('WINDOWS');
           sessionCapabilities.browserName.should.include('explorer');
         });

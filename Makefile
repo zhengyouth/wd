@@ -29,6 +29,9 @@ DEFAULT:
 	@echo '  test_ios test_iphone test_ipad'
 	@echo '  test_android test_android_phone test_android_tablet'
 
+jshint:
+	jshint test lib examples
+
 test:
 	BROWSER=multi make test_unit test_midway
 	BROWSER=chrome make test_midway test_e2e
@@ -128,6 +131,7 @@ unsupported_mapping: _dox
 
 .PHONY: \
 	DEFAULT \
+	jshint \
 	test \
 	test_sauce \
 	test_unit \

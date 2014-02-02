@@ -1,6 +1,6 @@
 /* global sauceJobTitle, mergeDesired, midwayUrl, Express */
 
-module.exports = function(that, partials) {
+module.exports = function (that, partials) {
 
   that.timeout(env.TIMEOUT);
 
@@ -9,59 +9,59 @@ module.exports = function(that, partials) {
   var browser;
   var allPassed = true;
   var express;
-  before(function(done) {
-    express = new Express( __dirname + '/assets', partials );
+  before(function (done) {
+    express = new Express(__dirname + '/assets', partials);
     express.start(done);
   });
 
-  before(function() {
+  before(function () {
     browser = wd.promiseChainRemote(env.REMOTE_CONFIG);
     deferred.resolve(browser);
     var sauceExtra = {
       name: sauceJobTitle(this.runnable().parent.title),
       tags: ['midway']
     };
-    var desired = mergeDesired(env.DESIRED, env.SAUCE? sauceExtra : null );
+    var desired = mergeDesired(env.DESIRED, env.SAUCE ? sauceExtra : null);
     return browser
       .configureLogging()
-      .then(function() {
+      .then(function () {
         return browser
           .init(desired)
-          .catch(function() {
+          .catch(function () {
             // trying one more time
             return browser.init(desired);
           });
       });
   });
 
-  beforeEach(function() {
+  beforeEach(function () {
     var url = midwayUrl(
       this.currentTest.parent.title,
       this.currentTest.title
     );
     return browser
     .get(url)
-    .title().should.eventually.include("WD Tests")
-    .catch(function() {
+    .title().should.eventually.include('WD Tests')
+    .catch(function () {
       // trying one more time
       return browser
         .get(url)
-        .title().should.eventually.include("WD Tests");
+        .title().should.eventually.include('WD Tests');
     });
   });
 
-  afterEach(function() {
+  afterEach(function () {
     allPassed = allPassed && (this.currentTest.state === 'passed');
   });
 
-  after(function() {
+  after(function () {
     return browser
-      .quit().then(function() {
-        if(env.SAUCE) { return(browser.sauceJobStatus(allPassed)); }
+      .quit().then(function () {
+        if (env.SAUCE) { return browser.sauceJobStatus(allPassed); }
       });
   });
 
-  after(function(done) {
+  after(function (done) {
     express.stop(done);
   });
 

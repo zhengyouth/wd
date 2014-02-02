@@ -10,4 +10,5 @@ var criterias = {
   child: 'theChild'
 };
 
-require('../api-el-suffix-base').test('ById','by-id', partials, criterias);
+require('../api-el-suffix-base')
+    .test('ById', 'by-id', partials, criterias);

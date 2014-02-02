@@ -7,13 +7,13 @@ function buildDesired(title) {
     name: sauceJobTitle(title),
     tags: ['midway']
   };
-  var desired = mergeDesired( env.DESIRED,
-    env.SAUCE? sauceExtra : null
+  var desired = mergeDesired(env.DESIRED,
+    env.SAUCE ? sauceExtra : null
   );
   return desired;
 }
 
-describe('config-http ' + env.ENV_DESC + ' @multi', function() {
+describe('config-http ' + env.ENV_DESC + ' @multi', function () {
   this.timeout(env.TIMEOUT);
 
   var browser;
@@ -27,32 +27,35 @@ describe('config-http ' + env.ENV_DESC + ' @multi', function() {
     return browser;
   }
 
-  before(function(done) {
-    express = new Express( __dirname + '/assets', partials);
+  before(function (done) {
+    express = new Express(__dirname + '/assets', partials);
     express.start(done);
   });
 
-  beforeEach(function() {
+  beforeEach(function () {
     currentHttpConfig = wd.getHttpConfig();
   });
 
-  afterEach(function() {
+  afterEach(function () {
     var _this = this;
     wd.configureHttp(currentHttpConfig);
     wd.getHttpConfig().should.deep.equal(currentHttpConfig);
-    if(browser && browser.sessionID){
+    if (browser && browser.sessionID) {
       return browser
-        .quit().then(function() {
-          if(env.SAUCE) { return(browser.sauceJobStatus(_this.currentTest.state === 'passed')); }
+        .quit().then(function () {
+          if (env.SAUCE) {
+            return (browser.sauceJobStatus(_this.currentTest.state ===
+              'passed'));
+          }
         });
     }
   });
 
-  after(function(done) {
+  after(function (done) {
     express.stop(done);
   });
 
-  it("wd.configureHttp", function() {
+  it('wd.configureHttp', function () {
 
     var newConfig = {
       timeout: env.HTTP_TIMEOUT || 60000,
@@ -67,7 +70,7 @@ describe('config-http ' + env.ENV_DESC + ' @multi', function() {
     wd.configureHttp(newConfig);
 
     wd.getHttpConfig().should.deep.equal(newConfig);
-    wd.configureHttp( {baseUrl: 'http://example2.com' } );
+    wd.configureHttp({baseUrl: 'http://example2.com' });
     wd.getHttpConfig().should.deep.equal(newConfig2);
 
     promiseChainRemote();
@@ -76,7 +79,7 @@ describe('config-http ' + env.ENV_DESC + ' @multi', function() {
 
   });
 
-  it("browser.configureHttp", function() {
+  it('browser.configureHttp', function () {
 
     var wdCurrent = wd.getHttpConfig();
 
@@ -99,34 +102,36 @@ describe('config-http ' + env.ENV_DESC + ' @multi', function() {
     browser._httpConfig.should.deep.equal(newConfig);
     wd.getHttpConfig().should.deep.equal(wdCurrent);
 
-    browser.configureHttp( {baseUrl: 'http://example4.com' } );
+    browser.configureHttp({baseUrl: 'http://example4.com' });
     browser._httpConfig.should.deep.equal(newConfig2);
     wd.getHttpConfig().should.deep.equal(wdCurrent);
 
   });
 
-  it('browser.configureHttp (using promise)', function() {
+  it('browser.configureHttp (using promise)', function () {
     promiseChainRemote();
     var current = _(browser._httpConfig).clone();
     current.should.exist;
     var wdCurrent = wd.getHttpConfig();
     var newConfig = {
-        timeout: env.HTTP_TIMEOUT || 60000,
-        retries: env.HTTP_RETRIES || 10,
-        retryDelay: env.HTTP_RETRY_DELAY || 50,
-        baseUrl: 'http://example.com/'
+      timeout: env.HTTP_TIMEOUT || 60000,
+      retries: env.HTTP_RETRIES || 10,
+      retryDelay: env.HTTP_RETRY_DELAY || 50,
+      baseUrl: 'http://example.com/'
     };
-    if(newConfig.retryDelay = wdCurrent.retryDelay) { newConfig.retryDelay++; }
+    if (newConfig.retryDelay === wdCurrent.retryDelay) {
+      newConfig.retryDelay++;
+    }
     return browser
-      .configureHttp(newConfig).then(function() {
+      .configureHttp(newConfig).then(function () {
         browser._httpConfig.should.deep.equal(newConfig);
         wd.getHttpConfig().should.deep.equal(wdCurrent);
       })
       .configureHttp(current).should.be.fulfilled;
   });
 
-  it("setting global baseUrl", function() {
-    var url =  midwayUrl( this.runnable().parent.title, this.runnable().title);
+  it('setting global baseUrl', function () {
+    var url =  midwayUrl(this.runnable().parent.title, this.runnable().title);
     var matcher = url.match(/(http:\/\/[\d\.]+:\d+\/)(.*)/);
     var baseUrl = matcher[1];
     should.exist(baseUrl);
@@ -136,14 +141,14 @@ describe('config-http ' + env.ENV_DESC + ' @multi', function() {
 
     promiseChainRemote();
     return browser
-      .init(buildDesired( this.runnable().parent.title + " #1"))
+      .init(buildDesired(this.runnable().parent.title + ' #1'))
       .get(url).title().should.eventually.include('WD Tests - config-http')
       .get(relUrl).title().should.eventually.include('WD Tests - config-http')
       ;
   });
 
-  it("setting browser baseUrl", function() {
-    var url =  midwayUrl( this.runnable().parent.title, this.runnable().title);
+  it('setting browser baseUrl', function () {
+    var url =  midwayUrl(this.runnable().parent.title, this.runnable().title);
     var matcher = url.match(/(http:\/\/[\d\.]+:\d+\/)(.*)/);
     var baseUrl = matcher[1];
     should.exist(baseUrl);
@@ -153,8 +158,8 @@ describe('config-http ' + env.ENV_DESC + ' @multi', function() {
     promiseChainRemote();
     should.not.exist(browser._httpConfig.baseUrl);
     return browser
-      .init(buildDesired( this.runnable().parent.title + " #2"))
-      .then(function() {
+      .init(buildDesired(this.runnable().parent.title + ' #2'))
+      .then(function () {
         return browser
           .get(relUrl).should.eventually.include('WD Tests - config-http')
           .should.be.rejected;
@@ -164,8 +169,8 @@ describe('config-http ' + env.ENV_DESC + ' @multi', function() {
       .get(url).title().should.eventually.include('WD Tests - config-http');
   });
 
-  it("wd baseUrl override", function() {
-    var url =  midwayUrl( this.runnable().parent.title, this.runnable().title);
+  it('wd baseUrl override', function () {
+    var url =  midwayUrl(this.runnable().parent.title, this.runnable().title);
     var matcher = url.match(/(http:\/\/[\d\.]+:\d+\/)(.*)/);
     var baseUrl = matcher[1];
     should.exist(baseUrl);
@@ -176,8 +181,8 @@ describe('config-http ' + env.ENV_DESC + ' @multi', function() {
     promiseChainRemote();
     browser._httpConfig.baseUrl.should.include('__nowhere');
     return browser
-      .init(buildDesired( this.runnable().parent.title + " #3"))
-      .then(function() {
+      .init(buildDesired(this.runnable().parent.title + ' #3'))
+      .then(function () {
         return browser
           .get(relUrl).should.eventually.include('WD Tests - config-http')
           .should.be.rejected;
@@ -186,5 +191,4 @@ describe('config-http ' + env.ENV_DESC + ' @multi', function() {
       .get(relUrl).title().should.eventually.include('WD Tests - config-http')
       .get(url).title().should.eventually.include('WD Tests - config-http');
   });
-
 });

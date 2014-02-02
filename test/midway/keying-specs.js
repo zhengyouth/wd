@@ -1,10 +1,11 @@
 require('../helpers/setup');
 
-describe('keying ' + env.ENV_DESC, function() {
+describe('keying ' + env.ENV_DESC, function () {
   var partials = {};
 
   var browser;
-  require('./midway-base')(this, partials).then(function(_browser) { browser = _browser; });
+  require('./midway-base')(this, partials)
+    .then(function (_browser) { browser = _browser; });
 
   var altKey = wd.SPECIAL_KEYS.Alt;
   var nullKey = wd.SPECIAL_KEYS.NULL;
@@ -12,108 +13,110 @@ describe('keying ' + env.ENV_DESC, function() {
   var enterKey = wd.SPECIAL_KEYS.Enter;
 
   var keyingPartial =
-    '<div id="theDiv">\n' +
+    '<div id=\'theDiv\'>\n' +
     '<input></input>\n' +
     '<textarea></textarea>\n' +
     '</div>\n';
 
   partials['keying nothing'] = keyingPartial;
-  it('keying nothing', function() {
+  it('keying nothing', function () {
     return browser
-      .elementByCss("#theDiv input").type("").getValue().should.become("")
-      .elementByCss("#theDiv textarea").type("").getValue().should.become("");
+      .elementByCss('#theDiv input').type('').getValue().should.become('')
+      .elementByCss('#theDiv textarea').type('').getValue().should.become('');
   });
 
   partials['keying []'] = keyingPartial;
-  it('keying []', function() {
+  it('keying []', function () {
     return browser
-      .elementByCss("#theDiv input").type([]).getValue().should.become("")
-      .elementByCss("#theDiv textarea").type([]).getValue().should.become("");
+      .elementByCss('#theDiv input').type([]).getValue().should.become('')
+      .elementByCss('#theDiv textarea').type([]).getValue().should.become('');
   });
 
   partials['keying \'Hello\''] = keyingPartial;
-  it('keying \'Hello\'', function() {
+  it('keying \'Hello\'', function () {
     return browser
-      .elementByCss("#theDiv input").type('Hello')
+      .elementByCss('#theDiv input').type('Hello')
         .getValue().should.become('Hello')
-      .elementByCss("#theDiv textarea").type('Hello')
+      .elementByCss('#theDiv textarea').type('Hello')
         .getValue().should.become('Hello');
   });
 
   partials['keying [\'Hello\']'] = keyingPartial;
-  it('keying [\'Hello\']', function() {
+  it('keying [\'Hello\']', function () {
     return browser
-      .elementByCss("#theDiv input").type(['Hello']).getValue().should.become('Hello')
-      .elementByCss("#theDiv textarea").type(['Hello']).getValue().should.become('Hello');
+      .elementByCss('#theDiv input').type(['Hello']).getValue()
+        .should.become('Hello')
+      .elementByCss('#theDiv textarea').type(['Hello']).getValue()
+        .should.become('Hello');
   });
 
   partials['keying [\'Hello\',\' \',\'World\',\'!\']'] = keyingPartial;
-  it('keying [\'Hello\',\' \',\'World\',\'!\']', function() {
+  it('keying [\'Hello\',\' \',\'World\',\'!\']', function () {
     return browser
-      .elementByCss("#theDiv input").type(['Hello', ' ', 'World', '!'])
+      .elementByCss('#theDiv input').type(['Hello', ' ', 'World', '!'])
         .getValue().should.become('Hello World!')
-      .elementByCss("#theDiv textarea").type(['Hello', ' ', 'World', '!'])
+      .elementByCss('#theDiv textarea').type(['Hello', ' ', 'World', '!'])
         .getValue().should.become('Hello World!');
   });
 
   partials['keying \'Hello\\n\''] = keyingPartial;
-  it('keying \'Hello\\n\'', function() {
+  it('keying \'Hello\\n\'', function () {
     return browser
-      .elementByCss("#theDiv input").type('Hello\n')
+      .elementByCss('#theDiv input').type('Hello\n')
         .getValue().should.become('Hello')
-      .elementByCss("#theDiv textarea").type('Hello\n')
+      .elementByCss('#theDiv textarea').type('Hello\n')
         .getValue().should.become('Hello\n');
   });
 
   partials['keying \'\\r\''] = keyingPartial;
-  it('keying \'\\r\'', function() {
+  it('keying \'\\r\'', function () {
     return browser
-      .elementByCss("#theDiv input").type(['Hello','\r'])
+      .elementByCss('#theDiv input').type(['Hello', '\r'])
         .getValue().should.become('Hello')
-      .elementByCss("#theDiv textarea").type(['Hello','\r'])
-        .getValue().should.become( env.DESIRED.browserName === 'firefox'?
+      .elementByCss('#theDiv textarea').type(['Hello', '\r'])
+        .getValue().should.become(env.DESIRED.browserName === 'firefox' ?
           'Hello\n': 'Hello');
   });
 
   partials['keying [returnKey]'] = keyingPartial;
-  it('keying [returnKey]', function() {
+  it('keying [returnKey]', function () {
     return browser
-      .elementByCss("#theDiv input").type(['Hello', returnKey])
+      .elementByCss('#theDiv input').type(['Hello', returnKey])
         .getValue().should.become('Hello')
-      .elementByCss("#theDiv textarea").type(['Hello', returnKey])
+      .elementByCss('#theDiv textarea').type(['Hello', returnKey])
         .getValue().should.become('Hello\n');
   });
 
   partials['keying [enterKey]'] = keyingPartial;
-  it('keying [enterKey]', function() {
+  it('keying [enterKey]', function () {
     return browser
-      .elementByCss("#theDiv input").type(['Hello', enterKey])
+      .elementByCss('#theDiv input').type(['Hello', enterKey])
         .getValue().should.become('Hello')
-      .elementByCss("#theDiv textarea").type(['Hello', enterKey])
+      .elementByCss('#theDiv textarea').type(['Hello', enterKey])
         .getValue().should.become('Hello\n');
   });
 
   partials['keying [nullKey]'] = keyingPartial;
-  it('keying [nullKey]', function() {
+  it('keying [nullKey]', function () {
     return browser
-      .elementByCss("#theDiv input").type(['Hello', nullKey])
+      .elementByCss('#theDiv input').type(['Hello', nullKey])
         .getValue().should.become('Hello')
-      .elementByCss("#theDiv textarea").type(['Hello', nullKey])
+      .elementByCss('#theDiv textarea').type(['Hello', nullKey])
         .getValue().should.become('Hello');
   });
 
 
-  if(!env.SAUCE) { // alt key seems to have no effect
+  if (!env.SAUCE) { // alt key seems to have no effect
     partials['keying [altKey]'] = keyingPartial;
-    it('keying [altKey]', function() {
+    it('keying [altKey]', function () {
       return browser
-        .elementByCss("#theDiv input").type([altKey, 'Hello', altKey])
-          .getValue().then(function(val) {
+        .elementByCss('#theDiv input').type([altKey, 'Hello', altKey])
+          .getValue().then(function (val) {
             val.should.exist;
             val.should.not.equal('Hello');
           })
-        .elementByCss("#theDiv textarea").type([altKey, 'Hello', altKey])
-          .getValue().then(function(val) {
+        .elementByCss('#theDiv textarea').type([altKey, 'Hello', altKey])
+          .getValue().then(function (val) {
             val.should.exist;
             val.should.not.equal('Hello');
           });

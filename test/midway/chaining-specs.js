@@ -1,17 +1,18 @@
 require('../helpers/setup');
 
-describe('chaining ' + env.ENV_DESC, function() {
+describe('chaining ' + env.ENV_DESC, function () {
   var partials = {};
 
   var browser;
-  require('./midway-base')(this, partials).then(function(_browser) { browser = _browser; });
+  require('./midway-base')(this, partials)
+    .then(function (_browser) { browser = _browser; });
 
   partials['<browser chaining>'] =
     '<div id="theDiv">\n' +
     '  <div class="text">Hello World!</div>\n' +
     '  <input></input>\n' +
     '</div>\n';
-  it('<browser chaining>', function() {
+  it('<browser chaining>', function () {
     return browser
       .elementByCss('#theDiv .text')
       .text()
@@ -34,23 +35,23 @@ describe('chaining ' + env.ENV_DESC, function() {
     '  <div class="text">Hello World!</div>\n' +
     '  <input></input>\n' +
     '</div>\n';
-  it('<element chaining>', function() {
+  it('<element chaining>', function () {
     return browser
       .elementByCss('#theDiv .text')
-      .then(function(el) {
+      .then(function (el) {
         return el
           .text()
           .should.become('Hello World!');
       })
       .elementByCss('#theDiv input')
-      .then(function(el) {
+      .then(function (el) {
         return el
           .type('Bonjour!')
           .getValue()
           .should.become('Bonjour!');
       })
       .elementByCss('#theDiv input')
-      .then(function(el) {
+      .then(function (el) {
         return el
           .clear()
           .type('Hola')
@@ -59,5 +60,4 @@ describe('chaining ' + env.ENV_DESC, function() {
           .should.become('Hola!');
       });
   });
-
 });

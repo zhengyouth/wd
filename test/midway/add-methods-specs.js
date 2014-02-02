@@ -2,44 +2,44 @@
 
 require('../helpers/setup');
 
-describe('add-methods ' + env.ENV_DESC, function() {
+describe('add-methods ' + env.ENV_DESC, function () {
   this.timeout(env.TIMEOUT);
 
   var extraAsyncMethods = {
-    sleepAndElementById: function(id, cb) {
+    sleepAndElementById: function (id, cb) {
       var _this = this;
-      _this.sleep(200, function(err) {
-        if(err) { return cb(err); }
+      _this.sleep(200, function (err) {
+        if (err) { return cb(err); }
         _this.elementById(id, cb);
       });
     },
-    sleepAndText: function(el, cb) {
-      if(!cb && typeof el === 'function'){
+    sleepAndText: function (el, cb) {
+      if (!cb && typeof el === 'function') {
         cb = el;
         el = undefined;
       }
       var _this = this;
-      _this.sleep(200, function(err) {
-        if(err) { return cb(err); }
+      _this.sleep(200, function (err) {
+        if (err) { return cb(err); }
         _this.text(el, cb);
       });
     },
-    elementByCssWhenReady: function(selector, timeout, cb) {
+    elementByCssWhenReady: function (selector, timeout, cb) {
       var _this = this;
-      _this.waitForElementByCss(selector, timeout, function(err) {
-        if(err) { return cb(err); }
+      _this.waitForElementByCss(selector, timeout, function (err) {
+        if (err) { return cb(err); }
         _this.elementByCss(selector, cb);
       });
     }
   };
 
   var extraPromiseChainMethods = {
-    sleepAndElementById: function(id) {
+    sleepAndElementById: function (id) {
       return this
         .sleep(200)
         .elementById(id);
-    } ,
-    sleepAndText: function(el) {
+    },
+    sleepAndText: function (el) {
       return this
         .sleep(200)
         .text(el);
@@ -47,20 +47,20 @@ describe('add-methods ' + env.ENV_DESC, function() {
   };
 
   var extraPromiseNoChainMethods = {
-    sleepAndElementById: function(id) {
+    sleepAndElementById: function (id) {
       var _this = this;
       return this
         .sleep(200)
-        .then(function() {
+        .then(function () {
           return _this.elementById(id);
         });
 
-    } ,
-    sleepAndText: function(el) {
+    },
+    sleepAndText: function (el) {
       var _this = this;
       return this
         .sleep(200)
-        .then(function() {
+        .then(function () {
           return _this.text(el);
         });
     }
@@ -72,8 +72,8 @@ describe('add-methods ' + env.ENV_DESC, function() {
     _(extraPromiseNoChainMethods).keys().value()
   );
 
-  var noExtraMethodCheck = function() {
-    _(allExtraMethodNames).each(function(name) {
+  var noExtraMethodCheck = function () {
+    _(allExtraMethodNames).each(function (name) {
       should.not.exist(wd.Webdriver.prototype[name]);
       should.not.exist(wd.PromiseWebdriver.prototype[name]);
       should.not.exist(wd.PromiseChainWebdriver.prototype[name]);
@@ -83,27 +83,27 @@ describe('add-methods ' + env.ENV_DESC, function() {
   var partials = {};
   var express;
 
-  before(function(done) {
-    express = new Express( __dirname + '/assets' , partials);
+  before(function (done) {
+    express = new Express(__dirname + '/assets', partials);
     express.start(done);
   });
 
-  beforeEach(function() {
+  beforeEach(function () {
     noExtraMethodCheck();
   });
 
-  afterEach(function() {
-    _(allExtraMethodNames).each(function(name) {
+  afterEach(function () {
+    _(allExtraMethodNames).each(function (name) {
       wd.removeMethod(name);
     });
     noExtraMethodCheck();
   });
 
-  after(function(done) {
+  after(function (done) {
     express.stop(done);
   });
 
-  describe('promise chain', function() {
+  describe('promise chain', function () {
 
     var browser;
 
@@ -118,83 +118,85 @@ describe('add-methods ' + env.ENV_DESC, function() {
       };
       return browser
         .configureLogging()
-        .init(mergeDesired(env.DESIRED, env.SAUCE? sauceExtra : null ))
-        .get( midwayUrl(
+        .init(mergeDesired(env.DESIRED, env.SAUCE ? sauceExtra : null))
+        .get(midwayUrl(
           that.runnable().parent.parent.title,
           that.runnable().parent.title,
           that.runnable().title)
         );
     }
 
-    afterEach(function() {
+    afterEach(function () {
       var _this = this;
       return browser
-        .quit().then(function() {
-          if(env.SAUCE) { return(browser.sauceJobStatus(_this.currentTest.state === 'passed')); }
+        .quit().then(function () {
+          if (env.SAUCE) { return (browser.sauceJobStatus(
+            _this.currentTest.state === 'passed'));
+          }
         });
     });
 
     partials['wd.addPromisedMethod (chain)'] =
-      '<div id="theDiv">Hello World!</div>';
-    it('wd.addPromisedMethod (chain)', function() {
-      _(extraPromiseChainMethods).each(function(method, name) {
+      '<div id=\'theDiv\'>Hello World!</div>';
+    it('wd.addPromisedMethod (chain)', function () {
+      _(extraPromiseChainMethods).each(function (method, name) {
         wd.addPromiseChainMethod(name, method);
       });
 
       browser = newPromiseChainRemote();
-      return initAndGet(this, 'pc/1').then(function() {
+      return initAndGet(this, 'pc/1').then(function () {
         return browser
           .sleepAndElementById('theDiv')
           .should.be.fulfilled
           .sleepAndText()
           .should.be.fulfilled
           .sleepAndElementById('theDiv')
-          .sleepAndText().should.eventually.include("Hello World!");
+          .sleepAndText().should.eventually.include('Hello World!');
       });
     });
 
     partials['wd.addPromisedMethod (no-chain)'] =
-      '<div id="theDiv">Hello World!</div>';
-    it('wd.addPromisedMethod (no-chain)', function() {
-      _(extraPromiseNoChainMethods).each(function(method, name) {
+      '<div id=\'theDiv\'>Hello World!</div>';
+    it('wd.addPromisedMethod (no-chain)', function () {
+      _(extraPromiseNoChainMethods).each(function (method, name) {
         wd.addPromiseMethod(name, method);
       });
 
       browser = newPromiseChainRemote();
-      return initAndGet(this, 'pc/2').then(function() {
+      return initAndGet(this, 'pc/2').then(function () {
         return browser
           .sleepAndElementById('theDiv')
           .should.be.fulfilled
           .sleepAndText()
           .should.be.fulfilled
           .sleepAndElementById('theDiv')
-          .sleepAndText().should.eventually.include("Hello World!");
+          .sleepAndText().should.eventually.include('Hello World!');
       });
     });
 
     partials['wd.addAsyncMethod'] =
-      '<div id="theDiv">Hello World!</div>';
-    it('wd.addAsyncMethod', function() {
-      _(extraAsyncMethods).each(function(method, name) {
+      '<div id=\'theDiv\'>Hello World!</div>';
+    it('wd.addAsyncMethod', function () {
+      _(extraAsyncMethods).each(function (method, name) {
         wd.addAsyncMethod(name, method);
       });
       browser = newPromiseChainRemote();
-      return initAndGet(this, 'pc/3').then(function() {
+      return initAndGet(this, 'pc/3').then(function () {
         return browser
           .sleepAndElementById('theDiv')
             .should.be.fulfilled
           .sleepAndText()
             .should.be.fulfilled
           .sleepAndElementById('theDiv')
-          .sleepAndText().should.eventually.include("Hello World!")
+          .sleepAndText().should.eventually.include('Hello World!')
           .elementByCssWhenReady('#theDiv', 500).text()
-            .should.become("Hello World!");
+            .should.become('Hello World!');
       });
     });
 
   });
 
-  describe('promise no-chain', function() {
+  describe('promise no-chain', function () {
 
     var browser;
 
@@ -209,10 +211,11 @@ describe('add-methods ' + env.ENV_DESC, function() {
       };
       return browser
         .configureLogging()
-        .then(function() {
-          return browser.init(mergeDesired(env.DESIRED, env.SAUCE? sauceExtra : null ));
-        }).then(function() {
-          return browser.get( midwayUrl(
+        .then(function () {
+          return browser.init(
+            mergeDesired(env.DESIRED, env.SAUCE ? sauceExtra : null));
+        }).then(function () {
+          return browser.get(midwayUrl(
             that.runnable().parent.parent.title,
             that.runnable().parent.title,
             that.runnable().title)
@@ -220,58 +223,60 @@ describe('add-methods ' + env.ENV_DESC, function() {
         });
     }
 
-    afterEach(function() {
+    afterEach(function () {
       var _this = this;
       return browser
-        .quit().then(function() {
-          if(env.SAUCE) { return(browser.sauceJobStatus(_this.currentTest.state === 'passed')); }
+        .quit().then(function () {
+          if (env.SAUCE) { return browser.sauceJobStatus(
+            _this.currentTest.state === 'passed');
+          }
         });
     });
 
     partials['wd.addPromisedMethod'] =
-      '<div id="theDiv">Hello World!</div>';
-    it('wd.addPromisedMethod', function() {
-      _(extraPromiseNoChainMethods).each(function(method, name) {
+      '<div id=\'theDiv\'>Hello World!</div>';
+    it('wd.addPromisedMethod', function () {
+      _(extraPromiseNoChainMethods).each(function (method, name) {
         wd.addPromiseMethod(name, method);
       });
 
       browser = newPromiseRemote();
-      return initAndGet(this, 'pnc/1').then(function() {
+      return initAndGet(this, 'pnc/1').then(function () {
         return browser
           .sleepAndElementById('theDiv').should.be.fulfilled
-          .then(function() {
+          .then(function () {
             return browser.sleepAndText().should.be.fulfilled;
-          }).then(function() {
+          }).then(function () {
             return browser.sleepAndElementById('theDiv');
-          }).then(function(el){
-            return browser.sleepAndText(el).should.become("Hello World!");
+          }).then(function (el) {
+            return browser.sleepAndText(el).should.become('Hello World!');
           });
       });
     });
 
     partials['wd.addAsyncMethod'] =
-      '<div id="theDiv">Hello World!</div>';
-    it('wd.addAsyncMethod', function() {
-      _(extraAsyncMethods).each(function(method, name) {
+      '<div id=\'theDiv\'>Hello World!</div>';
+    it('wd.addAsyncMethod', function () {
+      _(extraAsyncMethods).each(function (method, name) {
         wd.addAsyncMethod(name, method);
       });
       browser = newPromiseRemote();
-      return initAndGet(this, 'pnc/2').then(function() {
+      return initAndGet(this, 'pnc/2').then(function () {
         return browser
           .sleepAndElementById('theDiv').should.be.fulfilled
-          .then(function() {
+          .then(function () {
             return browser.sleepAndText().should.be.fulfilled;
-          }).then(function() {
+          }).then(function () {
             return browser.sleepAndElementById('theDiv');
-          }).then(function(el){
-            return browser.sleepAndText(el).should.become("Hello World!");
+          }).then(function (el) {
+            return browser.sleepAndText(el).should.become('Hello World!');
           });
       });
     });
 
   });
 
-  describe('async', function() {
+  describe('async', function () {
 
     var browser;
 
@@ -284,10 +289,11 @@ describe('add-methods ' + env.ENV_DESC, function() {
         name: sauceJobTitle(that.runnable().parent.parent.title + ' ' + desc),
         tags: ['midway']
       };
-      browser.configureLogging(function(err) {
-        if(err) { return cb(err); }
-        browser.init(mergeDesired(env.DESIRED, env.SAUCE? sauceExtra : null) , function(err) {
-          if(err) { return cb(err); }
+      browser.configureLogging(function (err) {
+        if (err) { return cb(err); }
+        browser.init(mergeDesired(env.DESIRED, env.SAUCE ? sauceExtra : null),
+            function (err) {
+          if (err) { return cb(err); }
           browser.get(
             midwayUrl(
               that.runnable().parent.parent.title,
@@ -300,31 +306,30 @@ describe('add-methods ' + env.ENV_DESC, function() {
       });
     }
 
-    afterEach(function(done) {
+    afterEach(function (done) {
       var _this = this;
-      browser.quit(function(err) {
-        if(err) { return done(err); }
-        if(env.SAUCE)
-          { browser.sauceJobStatus(_this.currentTest.state === 'passed', done); }
-        else
-          { done(); }
+      browser.quit(function (err) {
+        if (err) { return done(err); }
+        if (env.SAUCE) {
+          browser.sauceJobStatus(_this.currentTest.state === 'passed', done);
+        } else { done(); }
       });
     });
 
     partials['wd.addAsyncMethod'] =
-      '<div id="theDiv">Hello World!</div>';
-    it('wd.addAsyncMethod', function(done) {
-      _(extraAsyncMethods).each(function(method, name) {
+      '<div id=\'theDiv\'>Hello World!</div>';
+    it('wd.addAsyncMethod', function (done) {
+      _(extraAsyncMethods).each(function (method, name) {
         wd.addAsyncMethod(name, method);
       });
       browser = newRemote();
-      return initAndGet(this, 'a/1', function(err) {
-        if(err) { return done(err); }
-        browser.sleepAndElementById('theDiv', function(err, el) {
-          if(err) { return done(err); }
+      return initAndGet(this, 'a/1', function (err) {
+        if (err) { return done(err); }
+        browser.sleepAndElementById('theDiv', function (err, el) {
+          if (err) { return done(err); }
           el.should.exist;
-          browser.sleepAndText(el, function(err,text) {
-            if(err) { return done(err); }
+          browser.sleepAndText(el, function (err, text) {
+            if (err) { return done(err); }
             text.should.equal('Hello World!');
             done();
           });

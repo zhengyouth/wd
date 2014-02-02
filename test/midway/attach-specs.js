@@ -1,15 +1,16 @@
 require('../helpers/setup');
 
-describe('attach ' + env.ENV_DESC, function() {
+describe('attach ' + env.ENV_DESC, function () {
   var partials = {};
 
   var browser;
-  require('./midway-base')(this, partials).then(function(_browser) { browser = _browser; });
+  require('./midway-base')(this, partials)
+    .then(function (_browser) { browser = _browser; });
 
-  it('attach', function() {
+  it('attach', function () {
     return browser
       .getSessionId()
-      .then(function(sessionId) {
+      .then(function (sessionId) {
         var browser2 = wd.promiseChainRemote(env.REMOTE_CONFIG);
         return browser2
           .attach(sessionId)
@@ -18,10 +19,10 @@ describe('attach ' + env.ENV_DESC, function() {
       });
   });
 
-  it('detach', function() {
+  it('detach', function () {
     return browser
       .getSessionId()
-      .then(function(sessionId) {
+      .then(function (sessionId) {
         var browser2 = wd.promiseChainRemote(env.REMOTE_CONFIG);
         return browser2
           .attach(sessionId)
