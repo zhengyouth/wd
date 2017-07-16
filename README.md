@@ -10,16 +10,22 @@
 [![Selenium Test Status](https://saucelabs.com/browser-matrix/wdjs.svg)](https://saucelabs.com/u/wdjs)
 
 **node.js Webdriver/Selenium 2 client**
+**node.js Webdriver/Selenium 2 客户端**
 
 - [Site](http://admc.io/wd/)
+- [站点](http://admc.io/wd/)
 - [Mailing List](https://groups.google.com/forum/#!forum/wdjs)
+- [邮件列表] (https://groups.google.com/forum/#!forum/wdjs)
 
 This library is designed to be a maleable implementation of the webdriver protocol in Node, exposing functionality via a number of programming paradigms. If you are looking for a more opinionated library, you might find [webdriver.io](http://webdriver.io/) interesting.
+在Nodejs中，这个库被设计用于对webdriver协议的扩展，并通过一些编程范例展示它的函数功能。如果你正在找更多的权威库，你可以查询关注[webdrvier.io](http://webdriver.io/)
 
 ## Release Notes
+## 版本注释
 [here](https://github.com/admc/wd/blob/master/doc/release-notes.md)
-
+[点这里](https://github.com/admc/wd/blob/master/doc/release-notes.md)
 ## Install
+## 安装
 
 ```
 npm install wd
@@ -27,8 +33,10 @@ npm install wd
 
 Note: WD.js does not start the selenium server. You may use the  [selenium-standalone](https://www.npmjs.com/package/selenium-standalone) package 
 to install and start a selenium server.
+注意：WD.js不启动selenium服务。你可以使用[selenium-standalone]安装包去安装和启动一个selenium服务。
 
 ## Authors
+## 作者
 
   - Adam Christian ([admc](http://github.com/admc))
   - Ruben Daniels ([javruben](https://github.com/javruben))
@@ -45,12 +53,16 @@ to install and start a selenium server.
   - Matti Schneider ([MattiSG](https://github.com/MattiSG))
 
 ## License
+## 许可证
 
   * License - Apache 2: http://www.apache.org/licenses/LICENSE-2.0
+  * 许可证 - Apache 2：http://www.apache.org/licenses/LICENSE-2.0
 
 ## Usage
+## 用法
 
 ### Q promises + chaining
+
 
 ```js
 ...
@@ -71,9 +83,10 @@ browser
   .done();
 ```
 [full code here](https://github.com/admc/wd/blob/master/examples/promise/chrome.js)
-
+[完整的代码](https://github.com/admc/wd/blob/master/examples/promise/chrome.js)
 
 ### Pure async
+### 简洁异步
 
 ```js
 ...
@@ -96,11 +109,12 @@ browser.init({browserName:'chrome'}, function() {
 });
 ```
 [full code here](https://github.com/admc/wd/blob/master/examples/async/chrome.js)
-
+[完整的代码](https://github.com/admc/wd/blob/master/examples/async/chrome.js)
 
 ### Q promises without chaining
 
 See example [here](https://github.com/admc/wd/blob/master/examples/promise/no-chain.js).
+例子看 [这里] (https://github.com/admc/wd/blob/master/examples/promise/no-chain.js). 
 
 ## Generators api
 
@@ -109,6 +123,8 @@ See example [here](https://github.com/admc/wd/blob/master/examples/promise/no-ch
 [Yiewd](https://github.com/jlipps/yiewd) is a wrapper around Wd.js that uses
 generators in order to avoid nested callbacks, like so:
 
+[Yiewd](https://github.com/jlipps/yiewd)封装到WD.js中，使用generators函数避免嵌套回调函数，
+像这样：
 ```js
 wd.remote(function*() {
   yield this.init(desiredCaps);
@@ -159,19 +175,22 @@ describe("using promises and chai-as-promised", function() {
 
 
 ## Repl
-
+## 控制台
 
 If wd was installed via npm run:
+如果WD已经安装了，可以通过npm运行：
+
 ```
 ./node_modules/.bin/wd shell
 ```
-
 Or for local install run:
+或者本地安装运行
 ```
 node lib/bin.js shell
 ```
-
 Then within the shell:
+然后进入shell
+
 ```
 ): wd shell
 > x = wd.remote() or wd.remote("ondemand.saucelabs.com", 80, "username", "apikey") or wd.remote("hub.browserstack.com", 80, "username", "apikey") or wd.remote("hub.testingbot.com", 80, "key", "secret")
@@ -201,8 +220,10 @@ WD is incrementally implementing the Mobile JsonWireProtocol draft, see proposal
 Check which Mobile JsonWire Protocol methods are supported in [/doc/jsonwire-mobile.md](doc/jsonwire-mobile.md)
 
 ### Browser initialization
+### 浏览器初始化
 
 #### Indexed parameters
+#### 带索引的参数
 
 ```js
 var browser = wd.remote();
@@ -218,12 +239,13 @@ var browser = wd.remote("hub.browserstack.com", 80, "username", "apikey");
 var browser = wd.remote("hub.testingbot.com", 80, "key", "secret");
 ```
 #### Named parameters
-
+#### 命名参数
 The parameters used are similar to those in the [url](http://nodejs.org/docs/latest/api/url.html) module.
 
 ```js
 var browser = wd.remote()
 // or
+// 或者
 var browser = wd.remote({
   hostname: '127.0.0.1',
   port: 4444,
@@ -231,6 +253,7 @@ var browser = wd.remote({
   pwd: 'password',
 });
 // or
+// 或者
 var browser = wd.remote({
   hostname: '127.0.0.1',
   port: 4444,
@@ -249,6 +272,7 @@ var browser = wd.remote({
 });
 ```
 #### Url string
+#### Url字符串
 
 ```js
 var browser = wd.remote('http://localhost:4444/wd/hub');
@@ -261,9 +285,9 @@ var browser = wd.remote('http://key:secret@hub.testingbot.com/wd/hub');
 ```
 
 #### Url object created via url.parse
-
+#### 通过url.parse创建Url对象
 [URL module documentation](http://nodejs.org/docs/v0.10.0/api/url.html#url_url)
-
+[URL模块文档](http://nodejs.org/docs/v0.10.0/api/url.html#url_url)
 ```js
 var url = require('url');
 var browser = wd.remote(url.parse('http://localhost:4444/wd/hub'));
@@ -276,6 +300,7 @@ var browser = wd.remote(url.parse('http://key:secret@hub.testingbot.com:80/wd/hu
 ```
 
 #### Defaults
+#### 默认
 
 ```js
 {
@@ -287,9 +312,10 @@ var browser = wd.remote(url.parse('http://key:secret@hub.testingbot.com:80/wd/hu
 ```
 
 #### Specifying driver type in remote
-
+#### 托管指定驱动类型
 You may pass `async`,`promise` or `promiseChain` to `remote` to specify the driver type instead of
 calling the driver specific method.
+你可以通过“async函数”，“promise函数”或者“promiseChain函数”去远程托管(“remote”)指定驱动类型，而不是调用驱动执行的方法
 
 ```js
 var browser = wd.remote('promiseChain')
@@ -313,9 +339,11 @@ var browser = wd.remote({
 ```
 
 #### Attach to an already-existing session
+#### 依赖一个已经存在的回话
 
 Instead of calling 'init' use 'attach' using the WebDriver session ID. Use `detach`
 to detach from the session (callbacks are optional).
+用'attach'代替'init'调用WebDriver session ID，使用'detach'对session进行分离
 
 ```js
 var browser = wd.remote('http://localhost:4444/wd/hub');
@@ -411,6 +439,7 @@ var promiseAsserter = new Asserter(
 [Here](https://github.com/admc/wd/blob/master/examples/promise/wait-for-custom.js) is a custom asserter example.
 
 ### Adding custom methods
+### 添加自定义方法
 
 - `wd.addAsyncMethod(name, method)`: This is for regular async methods with callback as the last argument. This will not only add the method to the async browser prototype, but also wrap the method and add it to the promise and promiseChain prototypes.
 - `wd.addPromiseMethod(name, method)`: This is for promise returning methods NOT USING CHAIN internally. This will not only add the method to the promise browser prototype, but also wrap the method and add it to the promiseChain prototype (but not to the async prototype).
@@ -430,6 +459,7 @@ Please refer to the following examples:
 Note: No need to call rewrap anymore.
 
 ### Promise helpers
+### promise函数的帮助类
 
 This is an alternative to adding custom methods.
 See example [here](https://github.com/admc/wd/blob/master/examples/promise/helper.js).
@@ -450,6 +480,7 @@ chain:
 The `resolve` methods work like `Q` `thenResolve`.
 
 ### Extra promise methods:
+### 特殊的promise函数方法
 
 - `at(i)`: get element from list (starting at 0).
 - `nth(i)`: get element from list (starting at 1).
@@ -463,17 +494,17 @@ The `resolve` methods work like `Q` `thenResolve`.
 **NOTE:** When using functions such as `nth()`, `first()`, `second()` you must use the "plural" versions of the `get` functions.
 
 ### Working with external promise libraries
-
+### 使用外部的promise函数库
 `wd` uses `Q` internally, but you may use promises from other libraries with the following methods:
-
+'WD'使用'Q'应用内部函数库，但是你可以通多下面的方法调用promises函数的其他函数库
 - `browser.resolve(externalPromise)`
 - `wd.addPromiseChainMethod(name, externalPromise)`
 - `wd.addPromiseMethod(name, externalPromise)`
 
 The external promise will be automatically wrapped within a Q promise using `new Q(externalPromise)`.
-
+这个外部的promise函数库将被自动打封装到一个 Q promise函数内，使用"new Q(externalPromise)"
 See example [here](https://github.com/admc/wd/blob/master/examples/promise/external-promise.js).
-
+例子看[这里](https://github.com/admc/wd/blob/master/examples/promise/external-promise.js).
 ### Http configuration / base url
 
 Http behaviour and base url may be configured via the `configureHttp` method as
@@ -530,12 +561,14 @@ browser.safeExecute("wrong!!!", function(err, res) { //returns
 ```
 
 ## Working with mobile device emulators
+## 使用移动设备模拟器
 
 It is possible to use `wd` to test mobile devices using either Selenium or Appium. However
 in either case the full JsonWire protocol is not supported (or is buggy).
+使用selenium或appium框架中的’wd‘可以测试移动设备。然而不论哪种框架都不支持完成的JsonWire协议（或者是bug）
 
 Examples [here](https://github.com/appium/sample-code/tree/master/sample-code/examples/node).
-
+[实例](https://github.com/appium/sample-code/tree/master/sample-code/examples/node).
 ### Selenium
 
 Both Android (using AndroidDriver) and ios (using ios-driver) are supported, locally or using
@@ -544,15 +577,18 @@ Sauce Labs cloud.
 ### Appium
 
 Android and iOS work locally and on [Sauce Labs](https://saucelabs.com/platforms/appium) or [BrowserStack](https://www.browserstack.com/automate).
+Appium工具可以在本地上执行Android和ios测试；也可以通过第三方平台上执行。[酱油实验室](https://saucelabs.com/platforms/appium)或者[BrowserStack](https://www.browserstack.com/automate)
 
 ## Run the tests!
-
+## 运行测试
 ```
 # Install the Selenium server, Chromedriver connect
+# 安装selenium服务，链接Chromedriver
 node_modules/.bin/install_selenium
 node_modules/.bin/install_chromedriver
 
 #Run the selenium server with chromedriver:
+#运行selenium服务和chromedriver
 node_modules/.bin/start_selenium_with_chromedriver
 
 #Run the test
